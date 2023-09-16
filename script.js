@@ -4,6 +4,8 @@
  const cardsDiv = document.getElementById("M-cards")
  const loader = document.getElementById("loader");
  const msg = document.getElementById("errorMsg")
+ const moreDetails= document.getElementById("moreDetails")
+ const details=document.getElementById("details")
  
   searchbtn.addEventListener("click",(e)=>{
     e.preventDefault();
@@ -37,6 +39,7 @@ async function fethDetails(key ,searchValue){
           const data = await response.json();
           if(data.Error){
             loader.style="display:none";
+            details.innerHTML="";
             msg.style.display="block";
             msg.innerHTML=`${data.Error}`
           }
@@ -46,12 +49,14 @@ async function fethDetails(key ,searchValue){
     }
     catch(error){
         loader.style="display:none";
+        details.innerHTML="";
         console.error(error);
     }
 
 }
  function RenderData(data){
     cardsDiv.innerHTML="";
+    details.innerHTML="";
      let count=1;
      msg.style.display="none";
      loader.style="display:none";
@@ -63,13 +68,48 @@ async function fethDetails(key ,searchValue){
          <p class="num">${count}</p>
          <div class="details">
              <p>${item.Title}</p>
-             <p>Release Year :${item.Year}</p>
-             <p>Type:${item.Type}</p>
+             <p>Release Year : ${item.Year}</p>
+             <p>Type : ${item.Type}</p>
+             <p id="moreDetails">More Details ><p>
          </div>`
          count++;
          cardsDiv.appendChild(card);
+
+        card.addEventListener("click",()=>renderDetails(item.imdbID));
+
     });
       
+ }
+
+
+ async function renderDetails(Id){
+    cardsDiv.innerHTML="";
+    details.innerHTML="";
+    const response= await fetch(`https://www.omdbapi.com/?i=${Id}&apikey=${apikey.value}`)
+    const data = await response.json();
+          if(data.Error){
+            loader.style="display:none";
+            msg.style.display="block";
+            msg.innerHTML=`${data.Error}`
+          }
+          else{
+           const cardDe= document.createElement("div")
+           cardDe.className="detailsCard";
+           cardDe.innerHTML=`<img src="${data.Poster}" alt="poster">
+           <div>
+              <p>Title : ${data.Title}</p>
+              <p>Type : ${data.Type}</p>
+              <p>Release Date : ${data.Released}</p>
+              <p>Genre : ${data.Genre}</p>
+              <p>Director : ${data.Director}</p>
+              <p>Actors : ${data.Actors} </p>
+              <p>imdb Rating : ${data.imdbRating}</p>
+              <p>imdb Votes :${data.imdbVotes}</p>
+           </div>`
+            details.appendChild(cardDe);
+
+          }
+
  }
 
 
