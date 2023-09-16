@@ -28,14 +28,7 @@
  
 async function fethDetails(key ,searchValue){
     try{
-        const response = await fetch(`https://www.omdbapi.com/?s=${searchValue}&apikey=${key}`)
-        // .then(res=>{
-        //     if(!res.ok)
-        //     {
-        //        throw new Error("Invalid Api Key")
-        //     }
-        //     return res.json()
-        // })
+        const response = await fetch(`https://www.omdbapi.com/?s=${searchValue}&apikey=${key}`);
           const data = await response.json();
           if(data.Error){
             loader.style="display:none";
@@ -68,8 +61,7 @@ async function fethDetails(key ,searchValue){
          <p class="num">${count}</p>
          <div class="details">
              <p>${item.Title}</p>
-             <p>Release Year : ${item.Year}</p>
-             <p>Type : ${item.Type}</p>
+            
              <p id="moreDetails">More Details ><p>
          </div>`
          count++;
@@ -83,6 +75,7 @@ async function fethDetails(key ,searchValue){
 
 
  async function renderDetails(Id){
+    loader.style="display:block";
     cardsDiv.innerHTML="";
     details.innerHTML="";
     const response= await fetch(`https://www.omdbapi.com/?i=${Id}&apikey=${apikey.value}`)
@@ -93,6 +86,7 @@ async function fethDetails(key ,searchValue){
             msg.innerHTML=`${data.Error}`
           }
           else{
+            loader.style="display:none";
            const cardDe= document.createElement("div")
            cardDe.className="detailsCard";
            cardDe.innerHTML=`<img src="${data.Poster}" alt="poster">
